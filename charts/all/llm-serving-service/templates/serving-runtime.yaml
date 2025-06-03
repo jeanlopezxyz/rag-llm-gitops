@@ -17,7 +17,7 @@ spec:
   containers:
     - args:
         - '--port=8080'
-        - '--model=/cache/models'
+        - '--model=$(MODEL_ID)'  # ← CAMBIO 1: era /cache/models
         - '--distributed-executor-backend=mp'
         - '--served-model-name=ibm-granite-instruct'
         - '--max-model-len=4096'
@@ -52,7 +52,7 @@ spec:
       volumeMounts:
         - mountPath: /dev/shm
           name: shm
-        - mountPath: /cache/models
+        - mountPath: /cache  # ← CAMBIO 2: era /cache/models
           name: models
   multiModel: false
   supportedModelFormats:

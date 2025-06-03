@@ -1,0 +1,253 @@
+= Demostración de Generación de Documentos con LLM y RAG
+:toc:
+:toclevels: 3
+:sectnums:
+
+== Introducción
+
+Esta implementación se basa en el `marco de patrones validados` (validated pattern framework), utilizando GitOps para el aprovisionamiento fluido de todos los operadores y aplicaciones. Despliega una aplicación Chatbot que aprovecha el poder de los Modelos de Lenguaje Grandes (LLMs, por sus siglas en inglés) combinados con el marco de Generación Aumentada por Recuperación (RAG, por sus siglas en inglés).
+
+El patrón utiliza link:https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-ai[Red Hat OpenShift AI] para desplegar y servir modelos LLM a escala.
+
+La aplicación utiliza ya sea el link:https://catalog.redhat.com/software/container-stacks/detail/5fb41c88abd2a6f7dbe1b37b[operador EDB Postgres para Kubernetes] (por defecto) o Redis para almacenar embeddings de productos Red Hat, ejecutándose en Red Hat OpenShift para generar propuestas de proyectos para productos específicos de Red Hat.
+
+== Prerrequisitos
+
+* Podman
+* Clúster de Red Hat Openshift ejecutándose en AWS. Las regiones soportadas son: us-east-1 us-east-2 us-west-1 us-west-2 ca-central-1 sa-east-1 eu-west-1 eu-west-2 eu-west-3 eu-central-1 eu-north-1 ap-northeast-1 ap-northeast-2 ap-northeast-3 ap-southeast-1 ap-southeast-2 ap-south-1.
+* Nodo GPU para ejecutar el servidor de Inferencia de Generación de Texto de Hugging Face en el clúster de Red Hat OpenShift.
+* Crear una bifurcación (fork) del repositorio Git link:https://github.com/validatedpatterns/rag-llm-gitops.git[rag-llm-gitops].
+
+== Descripción de la Demostración y Arquitectura
+
+El objetivo de esta demostración es mostrar una aplicación Chatbot LLM aumentada con datos de la documentación de productos Red Hat, ejecutándose en link:https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-ai[Red Hat OpenShift AI]. Despliega una aplicación LLM que se conecta a múltiples proveedores de LLM como OpenAI, Hugging Face y NVIDIA NIM. La aplicación genera una propuesta de proyecto para un producto Red Hat.
+
+=== Características Clave
+
+* Aprovechamiento de link:https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-ai[Red Hat OpenShift AI] para desplegar y servir modelos LLM impulsados por aceleradores GPU de NVIDIA.
+* Aplicación LLM aumentada con contenido de la documentación de productos Red Hat.
+* Múltiples proveedores de LLM (OpenAI, Hugging Face, NVIDIA).
+* Base de datos vectorial, como EDB Postgres para Kubernetes o Redis, para almacenar embeddings de la documentación de productos Red Hat.
+* Panel de monitoreo para proporcionar métricas clave como calificaciones.
+* Configuración GitOps para desplegar la demostración de extremo a extremo (frontend / base de datos vectorial / modelos servidos).
+
+.Figura 1. Vista general del patrón validado para la Demostración RAG con Red Hat OpenShift
+image::https://gitlab.com/osspa/portfolio-architecture-examples/-/raw/main/images/intro-marketectures/rag-demo-vp-marketing-slide.png[Overview]
+
+.Figura 2. Diagrama lógico de la Demostración RAG con Red Hat OpenShift.
+image::https://gitlab.com/osspa/portfolio-architecture-examples/-/raw/main/images/logical-diagrams/rag-demo-vp-ld.png[Logical]
+
+=== Flujo de Trabajo de la Demostración RAG
+
+.Figura 3. Diagrama esquemático del flujo de trabajo de la demostración RAG con Red Hat OpenShift.
+image::https://gitlab.com/osspa/portfolio-architecture-examples/-/raw/main/images/schematic-diagrams/rag-demo-vp-sd.png[Overview of workflow]
+
+=== Ingesta de Datos RAG
+
+.Figura 4. Diagrama esquemático para la ingesta de datos para RAG.
+image::https://gitlab.com/osspa/portfolio-architecture-examples/-/raw/main/images/schematic-diagrams/rag-demo-vp-ingress-sd.png[ingestion]
+
+=== Consulta Aumentada RAG
+
+.Figura 5. Diagrama esquemático para la consulta aumentada de la demostración RAG.
+image::https://gitlab.com/osspa/portfolio-architecture-examples/-/raw/main/images/schematic-diagrams/rag-demo-vp-query-sd.png[query]
+
+En la Figura 5, podemos ver la consulta aumentada RAG. Se utiliza el modelo link:https://huggingface.co/ibm-granite/granite-3.3-8b-instruct[IBM Granite 3.1-8B-Instruct] para el procesamiento del lenguaje, LangChain para integrar diferentes herramientas de la aplicación basada en LLM y para procesar los archivos PDF y páginas web, un proveedor de base de datos vectorial como EDB Postgres para Kubernetes o Redis, se utiliza para almacenar vectores, y link:https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-ai[Red Hat OpenShift AI] para servir el modelo link:https://huggingface.co/ibm-granite/granite-3.3-8b-instruct[IBM Granite 3.1-8B-Instruct], Gradio se utiliza para la interfaz de usuario y el almacenamiento de objetos para almacenar el modelo de lenguaje y otros conjuntos de datos. Los componentes de la solución se despliegan como microservicios en el clúster de Red Hat OpenShift.
+
+=== Descargar diagramas
+
+Vea y descargue todos los diagramas anteriores en nuestro sitio de herramientas de código abierto.
+
+link:https://www.redhat.com/architect/portfolio/tool/index.html?#gitlab.com/osspa/portfolio-architecture-examples/-/raw/main/diagrams/rag-demo-vp.drawio[Abrir Diagramas]
+
+.Figura 6. Arquitectura de demostración propuesta con OpenShift AI
+image::images/diagram.png[Diagram]
+
+=== Componentes desplegados
+
+* *Servidor de Inferencia de Generación de Texto vLLM:* El patrón despliega un Servidor de Inferencia vLLM. El servidor despliega y sirve el modelo `ibm-granite/granite-3.3-8b-instruct`. El servidor requerirá un nodo GPU.
+* *Servidor EDB Postgres para Kubernetes / Redis:* Se despliega un servidor de Base de Datos Vectorial para almacenar embeddings vectoriales creados a partir de la documentación de productos Red Hat.
+* *Tarea de Llenado de VectorDb (Populate VectorDb Job):* La tarea crea los embeddings y llena la base de datos vectorial.
+* *Aplicación LLM:* Esta es una aplicación Chatbot que puede generar una propuesta de proyecto aumentando el LLM con la documentación de productos Red Hat almacenada en la base de datos vectorial.
+* *Prometheus:* Despliega una instancia de Prometheus para almacenar las diversas métricas de la aplicación LLM y el servidor TGIS.
+* *Grafana:* Despliega la aplicación Grafana para visualizar las métricas.
+
+== Desplegando la demostración
+
+Para ejecutar la demostración, asegúrese de que Podman esté ejecutándose en su máquina. Bifurque (fork) el repositorio link:https://github.com/validatedpatterns/rag-llm-gitops[rag-llm-gitops] en su organización.
+
+=== Iniciar sesión en el clúster de OpenShift
+
+Reemplace el token y la URL del servidor API en el siguiente comando para iniciar sesión en el clúster de OpenShift.
+
+----
+oc login --token=<token> --server=<api_server_url> # iniciar sesión en el clúster de Openshift
+----
+
+=== Clonando el repositorio
+
+----
+git clone https://github.com/<<tu-nombre-de-usuario>>/rag-llm-gitops.git
+cd rag-llm-gitops
+----
+
+=== Configurando el modelo
+
+Este patrón despliega link:https://huggingface.co/ibm-granite/granite-3.3-8b-instruct[IBM Granite 3.1-8B-Instruct] de forma predeterminada. Ejecute el siguiente comando para configurar vault con el ID del modelo.
+
+----
+# Copia values-secret.yaml.template a ~/values-secret-rag-llm-gitops.yaml.
+# Nunca deberías registrar estos archivos en el control de versiones
+# Añade secretos al values-secret.yaml que necesiten ser añadidos a vault.
+cp values-secret.yaml.template ~/values-secret-rag-llm-gitops.yaml
+----
+
+Para desplegar un modelo que requiera un token de Hugging Face, obtenga el link:https://huggingface.co/settings/tokens[token de Hugging Face] y acepte los términos y condiciones en la página del modelo. Edite `~/values-secret-rag-llm-gitops.yaml` para reemplazar el `ID del modelo` y el token de `Hugging Face`.
+
+[source,yaml]
+----
+secrets:
+  - name: hfmodel
+    fields:
+    - name: hftoken
+      value: null
+    - name: modelId
+      value: "ibm-granite/granite-3.3-8b-instruct"
+  - name: minio
+    fields:
+    - name: MINIO_ROOT_USER
+      value: minio
+    - name: MINIO_ROOT_PASSWORD
+      value: null
+      onMissingValue: generate
+----
+
+=== Aprovisionar MachineSet de GPU
+
+Como prerrequisito para desplegar la aplicación utilizando el patrón validado, se deben aprovisionar nodos GPU junto con el Operador de Descubrimiento de Características de Nodo (Node Feature Discovery Operator) y el operador de GPU NVIDIA. Para aprovisionar Nodos GPU:
+
+El siguiente comando tardará unos 5-10 minutos.
+
+----
+./pattern.sh make create-gpu-machineset
+----
+
+Espere hasta que los nodos estén aprovisionados y en ejecución.
+
+.Nodos GPU
+image::images/nodes.png[Diagram]
+
+Alternativamente, siga las link:./GPU_provisioning.md[instrucciones] para instalar manualmente los nodos GPU, el Operador de Descubrimiento de Características de Nodo y el operador de GPU NVIDIA.
+
+=== Desplegar la aplicación
+
+NOTE: Este patrón soporta tres tipos de bases de datos vectoriales: EDB Postgres para Kubernetes, Elasticsearch y Redis. Por defecto, el patrón desplegará EDB Postgres para Kubernetes como base de datos vectorial. Para desplegar Redis, cambie `global.db.type` a `REDIS` en link:./values-global.yaml[values-global.yaml].
+
+[source,yaml]
+----
+---
+global:
+  pattern: rag-llm-gitops
+  options:
+    useCSV: false
+    syncPolicy: Automatic
+    installPlanApproval: Automatic
+# Posibles valores para db.type = [REDIS, EDB, ELASTIC]
+  db:
+    index: docs
+    type: EDB  # <--- Por defecto es EDB, Cambie el tipo de db a REDIS para despliegue Redis o ELASTIC para Elasticsearch
+main:
+  clusterGroupName: hub
+  multiSourceConfig:
+    enabled: true
+----
+
+Los siguientes comandos tardarán unos 15-20 minutos.
+
+IMPORTANT: *Se desplegará el patrón validado*
+
+----
+./pattern.sh make install
+----
+
+=== 1: Verificar la instalación
+
+. Inicie sesión en la consola web de OpenShift.
+. Navegue a Workloads --> Pods.
+. Seleccione el proyecto `rag-llm` del menú desplegable.
+. Los siguientes pods deberían estar en funcionamiento.
+
+.Pods en rag-llm
+image::images/rag-llm.png[Pods]
+
+NOTE: Si el servidor `hf-text-generation-server` no está en ejecución, asegúrese de haber seguido los pasos para configurar un nodo con GPU de las link:./GPU_provisioning.md[instrucciones] proporcionadas anteriormente.
+
+=== 2: Lanzar la aplicación
+
+. Haga clic en el icono `Caja de Aplicación` (Application box) en el encabezado, y seleccione `Retrieval-Augmented-Generation (RAG) LLM Demonstration UI`
+
+.Launch Application
+image::images/launch-application.png[Launch Application]
+
+. Debería lanzar la aplicación
+
+.Application
+image::images/application.png[Application]
+
+=== 3: Generar el documento de propuesta
+
+. Utilizará el proveedor y modelo predeterminados configurados como parte del despliegue de la aplicación. El proveedor predeterminado es un servidor de modelos de Hugging Face ejecutándose en OpenShift. El servidor de modelos se despliega con este patrón validado y requiere un nodo con GPU.
+. Ingrese cualquier nombre de empresa.
+. Ingrese el producto como `RedHat OpenShift`.
+. Haga clic en el botón `Generate` (Generar), se debería generar una propuesta de proyecto. La propuesta de proyecto también contiene la referencia del contenido RAG. El documento de propuesta de proyecto se puede descargar en formato PDF.
+
+.Propuesta Generada
+image::images/proposal.png[Routes]
+
+=== 4: Añadir un proveedor OpenAI
+
+Opcionalmente, puede añadir proveedores adicionales. La aplicación soporta los siguientes proveedores:
+
+* Servidor de Inferencia de Generación de Texto de Hugging Face
+* OpenAI
+* NVIDIA
+
+Haga clic en la pestaña `Add Provider` (Añadir Proveedor) para añadir un nuevo proveedor. Complete los detalles y haga clic en el botón `Add Provider`. El proveedor debería añadirse en el menú desplegable `Providers` bajo la pestaña `Chatbot`.
+
+.Añadir Proveedor
+image::images/add_provider.png[Routes]
+
+=== 5: Generar el documento de propuesta utilizando el proveedor OpenAI
+
+Siga las instrucciones del paso 3 para generar el documento de propuesta utilizando el proveedor OpenAI.
+
+.Propuesta con ChatGPT
+image::images/chatgpt.png[Routes]
+
+=== 6: Calificar el proveedor
+
+Puede calificar el modelo haciendo clic en el botón de opción `Rate the model` (Calificar el modelo). La calificación se capturará como parte de las métricas y puede ayudar a la empresa a decidir qué modelo desplegar en producción.
+
+=== 7: Panel de Grafana
+
+Por defecto, la aplicación Grafana se despliega en el espacio de nombres `llm-monitoring`. Para lanzar el Panel de Grafana, siga las instrucciones a continuación:
+
+. Obtenga las credenciales de la Aplicación Grafana
+.. Navegue a Workloads --> Secrets
+.. Haga clic en `grafana-admin-credentials` y copie `GF_SECURITY_ADMIN_USER`, `GF_SECURITY_ADMIN_PASSWORD`
+. Lance el Panel de Grafana
+.. Haga clic en el icono `Caja de Aplicación` (Application box) en el encabezado, y seleccione `Grafana UI for LLM ratings` (UI de Grafana para calificaciones LLM)
+image::images/launch-application.png[Launch Application] // Re-uso de la imagen, verificar si es correcto o si falta una específica.
+.. Ingrese las credenciales de administrador de Grafana.
+.. Se muestran las calificaciones para cada modelo.
+
+.Monitorización en Grafana
+image::images/monitoring.png[Routes]
+
+== Plan de Pruebas
+
+IR A: link:./TESTPLAN.md[Plan de Pruebas]
+
+== Licencias
+
+EDB Postgres para Kubernetes se distribuye bajo el Acuerdo de Licencia de Uso Limitado de EDB, disponible en link:https://www.enterprisedb.com/limited-use-license[enterprisedb.com/limited-use-license].

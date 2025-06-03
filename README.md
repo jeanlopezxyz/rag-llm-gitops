@@ -61,9 +61,9 @@ _Figure 4. Schematic diagram for Ingestion of data for RAG._
 
 _Figure 5. Schematic diagram for RAG demo augmented query._
 
-In Figure 5, we can see RAG augmented query. [IBM Granite 3.1-8B-Instruct](https://huggingface.co/ibm-granite/granite-3.1-8b-instruct) model is used for language processing, LangChain to
+In Figure 5, we can see RAG augmented query. [IBM Granite 3.1-8B-Instruct](https://huggingface.co/ibm-granite/granite-3.3-8b-instruct) model is used for language processing, LangChain to
 integrate different tools of the LLM-based application together and to process the PDF
-files and web pages, vector database provider such as EDB Postgres for Kubernetes or Redis, is used to store vectors, and [Red Hat OpenShift AI](https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-ai) to serve the [IBM Granite 3.1-8B-Instruct](https://huggingface.co/ibm-granite/granite-3.1-8b-instruct) model, Gradio is used for user interface and object storage to store language model and other datasets.
+files and web pages, vector database provider such as EDB Postgres for Kubernetes or Redis, is used to store vectors, and [Red Hat OpenShift AI](https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-ai) to serve the [IBM Granite 3.1-8B-Instruct](https://huggingface.co/ibm-granite/granite-3.3-8b-instruct) model, Gradio is used for user interface and object storage to store language model and other datasets.
 Solution components are deployed as microservices in the Red Hat OpenShift cluster.
 
 #### Download diagrams
@@ -77,7 +77,7 @@ _Figure 6. Proposed demo architecture with OpenShift AI_
 
 ### Components deployed
 
-- **vLLM Text Generation Inference Server:** The pattern deploys a vLLM Inference Server. The server deploys and serves `ibm-granite/granite-3.1-8b-instruct` model. The server will require a GPU node.
+- **vLLM Text Generation Inference Server:** The pattern deploys a vLLM Inference Server. The server deploys and serves `ibm-granite/granite-3.3-8b-instruct` model. The server will require a GPU node.
 - **EDB Postgres for Kubernetes / Redis Server:** A Vector Database server is deployed to store vector embeddings created from Red Hat product documentation.
 - **Populate VectorDb Job:** The job creates the embeddings and populates the vector database.
 - **LLM Application:** This is a Chatbot application that can generate a project proposal by augmenting the LLM with the Red Hat product documentation stored in vector db.
@@ -105,7 +105,7 @@ cd rag-llm-gitops
 
 ### Configuring model
 
-This pattern deploys [IBM Granite 3.1-8B-Instruct](https://huggingface.co/ibm-granite/granite-3.1-8b-instruct) out of box. Run the following command to configure vault with the model ID.
+This pattern deploys [IBM Granite 3.1-8B-Instruct](https://huggingface.co/ibm-granite/granite-3.3-8b-instruct) out of box. Run the following command to configure vault with the model ID.
 
 ```sh
 # Copy values-secret.yaml.template to ~/values-secret-rag-llm-gitops.yaml.
@@ -123,7 +123,7 @@ secrets:
     - name: hftoken
       value: null
     - name: modelId
-      value: "ibm-granite/granite-3.1-8b-instruct"
+      value: "ibm-granite/granite-3.3-8b-instruct"
   - name: minio
     fields:
     - name: MINIO_ROOT_USER
