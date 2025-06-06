@@ -36,8 +36,8 @@ serviceAccount:
 
 # --- INICIO DE LA MODIFICACIÓN ---
 podAnnotations:
-  sidecar.istio.io/inject: "true"
-  sidecar.istio.io/rewriteAppHTTPProbers: "true"
+  # sidecar.istio.io/inject: "true"
+  # sidecar.istio.io/rewriteAppHTTPProbers: "true"
 # --- FIN DE LA MODIFICACIÓN ---
 podLabels: {}
 
@@ -86,7 +86,7 @@ readinessProbe:
     path: /queue/status
     port: http
     scheme: HTTP
-  initialDelaySeconds: 60
+  initialDelaySeconds: 10
   timeoutSeconds: 5
   periodSeconds: 30
   successThreshold: 1
