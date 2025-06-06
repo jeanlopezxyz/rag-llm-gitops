@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:rag-llm-gitops-hub:argocd-application-controller#!/usr/bin/env bash
 set -eu
 
 get_abs_filename() {
