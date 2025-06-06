@@ -17,8 +17,8 @@ spec:
   containers:
     - args:
         - '--port=8080'
-        - '--model=$(MODEL_ID)'  # ← CAMBIO 1: era /cache/models
-        # - '--model=/cache/models'
+        # - '--model=$(MODEL_ID)'  # ← CAMBIO 1: era /cache/models
+        - '--model=/cache/models'
         - '--distributed-executor-backend=mp'
         - '--served-model-name=ibm-granite-instruct'
         - '--max-model-len=4096'

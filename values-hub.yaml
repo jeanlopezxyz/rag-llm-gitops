@@ -1,25 +1,26 @@
 clusterGroup:
   name: hub
   isHubCluster: true
-  namespaces:
-    - open-cluster-management
-    - vault
-    - golang-external-secrets
-    - openshift-nfd
-    - nvidia-gpu-operator
-    - redhat-ods-operator:
-        operatorGroup: true
-        targetNamespaces: []
-    - rag-llm:
-        operatorGroup: true
-        targetNamespaces: 
-          - rag-llm
-        labels:
-          opendatahub.io/dashboard: "true"
-          modelmesh-enabled: 'false'
-    - openshift-serverless:
-        operatorGroup: true
-        targetNamespaces: []
+  namespaces: []
+  # namespaces:
+  #   - open-cluster-management
+  #   - vault
+  #   - golang-external-secrets
+  #   - openshift-nfd
+  #   - nvidia-gpu-operator
+  #   - redhat-ods-operator:
+  #       operatorGroup: true
+  #       targetNamespaces: []
+  #   - rag-llm:
+  #       operatorGroup: true
+  #       targetNamespaces: 
+  #         - rag-llm
+  #       labels:
+  #         opendatahub.io/dashboard: "true"
+  #         modelmesh-enabled: 'false'
+  #   - openshift-serverless:
+  #       operatorGroup: true
+  #       targetNamespaces: []
   subscriptions:
     # Don't install RHOAI via validated patterns
     # RHOAI must be installed after service mesh and other dependencies are installed or it will break. 
