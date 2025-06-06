@@ -37,6 +37,7 @@ serviceAccount:
 # --- INICIO DE LA MODIFICACIÓN ---
 podAnnotations:
   sidecar.istio.io/inject: "true"
+  sidecar.istio.io/rewriteAppHTTPProbers: "true"
 # --- FIN DE LA MODIFICACIÓN ---
 podLabels: {}
 
