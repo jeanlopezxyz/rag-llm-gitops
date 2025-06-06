@@ -4,7 +4,7 @@ metadata:
   annotations:
     openshift.io/display-name: ibm-granite-instruct
     serving.knative.openshift.io/enablePassthrough: 'true'
-    sidecar.istio.io/inject: 'true'
+    sidecar.istio.io/inject: 'false'
     sidecar.istio.io/rewriteAppHTTPProbers: 'true'
   name: ibm-granite-instruct
   namespace: rag-llm
@@ -14,12 +14,11 @@ spec:
   predictor:
     annotations:
       serving.knative.dev/progress-deadline: 30m
-      sidecar.istio.io/inject: 'true'
     maxReplicas: 1
     minReplicas: 1
     model:
       modelFormat:
-        name: vLLM
+        name: vLLMz
       name: ''
       resources:
         limits:
