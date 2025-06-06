@@ -34,7 +34,10 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
-podAnnotations: {}
+# --- INICIO DE LA MODIFICACIÓN ---
+podAnnotations:
+  sidecar.istio.io/inject: "true"
+# --- FIN DE LA MODIFICACIÓN ---
 podLabels: {}
 
 podSecurityContext: {}
