@@ -1,0 +1,40 @@
+{{- if .Values.istio.authorizationPolicy.enabled }}
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-rag-llm-access
+  namespace: rag-llm
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rag-llm
+  rules:
+  - from:
+    - source:
+        namespaces: ["rag-llm", "redhat-ods-applications", "knative-serving"]
+    - source:
+        principals: ["cluster.local/ns/rag-llm/sa/default"]
+  - to:
+    - operation:
+        methods: ["GET", "POST", "OPTIONS"]
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-vllm-access
+  namespace: rag-llm
+spec:
+  selector:
+    matchLabels:
+      serving.kserve.io/inferenceservice: ibm-granite-instruct
+  rules:
+  - from:
+    - source:
+        namespaces: ["rag-llm", "knative-serving", "istio-system"]
+    - source:
+        principals: ["cluster.local/ns/rag-llm/sa/default"]
+  - to:
+    - operation:
+        methods: ["GET", "POST", "OPTIONS"]
+        paths: ["/v1/*", "/health", "/metrics"]
+{{- end }}

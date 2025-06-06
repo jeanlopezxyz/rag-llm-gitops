@@ -1,0 +1,37 @@
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: vllm-external-access
+  namespace: rag-llm
+spec:
+  hosts:
+  - ibm-granite-instruct-rag-llm.{{ coalesce .Values.global.localClusterDomain .Values.global.hubClusterDomain }}
+  ports:
+  - number: 80
+    name: http
+    protocol: HTTP
+  - number: 443
+    name: https
+    protocol: HTTPS
+  location: MESH_EXTERNAL
+  resolution: DNS
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: vllm-routing
+  namespace: rag-llm
+spec:
+  hosts:
+  - ibm-granite-instruct-rag-llm.{{ coalesce .Values.global.localClusterDomain .Values.global.hubClusterDomain }}
+  http:
+  - match:
+    - uri:
+        prefix: /v1
+    - uri:
+        prefix: /health
+    route:
+    - destination:
+        host: ibm-granite-instruct-predictor-default
+        port:
+          number: 8080

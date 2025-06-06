@@ -35,9 +35,19 @@ serviceAccount:
   name: ""
 
 # --- INICIO DE LA MODIFICACIÓN ---
+# Configuración de Istio
+istio:
+  authorizationPolicy:
+    enabled: true
+  peerAuthentication:
+    enabled: true
+  sidecarInjection:
+    enabled: true
+
+# Habilitar inyección de sidecar en el pod
 podAnnotations:
-  # sidecar.istio.io/inject: "true"
-  # sidecar.istio.io/rewriteAppHTTPProbers: "true"
+  sidecar.istio.io/inject: "true"
+  sidecar.istio.io/rewriteAppHTTPProbers: "true"
 # --- FIN DE LA MODIFICACIÓN ---
 podLabels: {}
 

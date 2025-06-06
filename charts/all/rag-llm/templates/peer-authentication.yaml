@@ -1,0 +1,10 @@
+{{- if .Values.istio.peerAuthentication.enabled }}
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: rag-llm-mtls
+  namespace: rag-llm
+spec:
+  mtls:
+    mode: PERMISSIVE
+{{- end }}
