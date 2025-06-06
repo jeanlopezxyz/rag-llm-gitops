@@ -85,6 +85,7 @@ readinessProbe:
     path: /queue/status
     port: http
     scheme: HTTP
+  initialDelaySeconds: 60
   timeoutSeconds: 5
   periodSeconds: 30
   successThreshold: 1
