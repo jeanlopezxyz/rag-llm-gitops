@@ -10,4 +10,3 @@ common/pattern-vault.init
 common/scripts/pattern-util.sh
 charts/all/llm-serving-service/templates/serving-runtime.yaml
 script2.sh
-commands.sh
