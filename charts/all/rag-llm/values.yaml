@@ -1,4 +1,3 @@
-
 global:
   localClusterDomain: example.com
   hubClusterDomain: example.com
@@ -10,11 +9,10 @@ global:
 llmui:
   namespace: "rag-llm"
 
-
 replicaCount: 1
 
 image:
-  repository: 'quay.io/ecosystem-appeng/rag-llm-ui'
+  repository: "quay.io/ecosystem-appeng/rag-llm-ui"
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "1.1"
@@ -51,9 +49,9 @@ podAnnotations:
 # --- FIN DE LA MODIFICACIÓN ---
 podLabels: {}
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
-
 
 securityContext:
   capabilities:
@@ -75,10 +73,10 @@ resources:
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
-    cpu: '2'
+    cpu: "2"
     memory: 2Gi
   requests:
-    cpu: '1'
+    cpu: "1"
     memory: 1Gi
 
 livenessProbe:
@@ -194,7 +192,6 @@ populateDbJob:
   doc_location: examples/notebooks/langchain/rhods-doc
   doc_dir: /docs
 
-
   # By default, fullname uses '{{ .Release.Name }}-{{ .Chart.Name }}'. This
   # overrides that and uses the given string instead.
   # fullnameOverride: "some-name"
@@ -216,7 +213,7 @@ populateDbJob:
   #    memory: 500Mi
 
   securityContext:
-    runAsUser: 
+    runAsUser:
     runAsGroup:
     fsGroup:
 
@@ -225,7 +222,7 @@ populateDbJob:
       name: cache-volume
     - mountPath: /docs/
       name: doc-volume
-  
+
   volumes:
     - name: cache-volume
       emptyDir:
@@ -244,3 +241,41 @@ hfmodel:
 # Create NetworkPolicy to allow traffic from all namespaces to allow monitoring. Set to false if monitoring is not needed
 customnetworkpolicy:
   enabled: true
+
+# ===== NUEVA SECCIÓN: Source PostgreSQL Database =====
+# Configuración de la base de datos PostgreSQL de origen
+source-db:
+  enabled: true
+  clusterName: source-postgres
+  replicaCount: 1
+  database: sourcedb
+  username: sourceuser
+  # password: ""  # Si está vacío, se generará automáticamente
+
+  postgresql:
+    parameters:
+      {}
+      # log_statement: "all"
+      # log_connections: "on"
+
+  storage:
+    size: 5Gi
+    # storageClass: ""  # Deja vacío para usar el StorageClass por defecto
+    # Si tienes un StorageClass específico, descomenta y especifica:
+    # storageClass: "gp3-csi"  # para AWS
+    # storageClass: "managed-csi"  # para Azure
+    # storageClass: "standard-csi"  # para GCP
+
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "1Gi"
+      cpu: "1"
+
+  # SQL personalizado para inicialización (opcional)
+  initSQL:
+    []
+    # - "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
+    # - "CREATE EXTENSION IF NOT EXISTS btree_gin;"

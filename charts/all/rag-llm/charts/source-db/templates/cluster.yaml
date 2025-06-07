@@ -1,0 +1,40 @@
+{{- if .Values.enabled }}
+apiVersion: postgresql.k8s.enterprisedb.io/v1
+kind: Cluster
+metadata:
+  name: {{ .Values.clusterName }}
+spec:
+  instances: {{ .Values.replicaCount }}
+  
+  postgresql:
+    parameters:
+      max_connections: "200"
+      shared_buffers: "256MB"
+      effective_cache_size: "1GB"
+      {{- if .Values.postgresql.parameters }}
+      {{- toYaml .Values.postgresql.parameters | nindent 6 }}
+      {{- end }}
+  
+  bootstrap:
+    initdb:
+      database: {{ .Values.database }}
+      owner: {{ .Values.username }}
+      secret:
+        name: {{ .Values.clusterName }}-credentials
+      {{- if .Values.initSQL }}
+      postInitSQL:
+        {{- range .Values.initSQL }}
+        - {{ . | quote }}
+        {{- end }}
+      {{- end }}
+  
+  # Storage configuration - esto creará el PVC automáticamente
+  storage:
+    size: {{ .Values.storage.size }}
+    {{- if .Values.storage.storageClass }}
+    storageClass: {{ .Values.storage.storageClass }}
+    {{- end }}
+  
+  resources:
+    {{- toYaml .Values.resources | nindent 4 }}
+{{- end }}
