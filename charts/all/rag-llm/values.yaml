@@ -178,7 +178,7 @@ populateDbJob:
     tag: "1.0.0"
     pullPolicy: IfNotPresent
 
-  command: ["/usr/bin/bash", "/app/entrypoint.sh"]
+  command: ["/usr/bin/bash", "/app/docker-entrypoint.sh"]
   #args: ["echo 'consuming a message'; sleep 5"]
 
   ## Define env
