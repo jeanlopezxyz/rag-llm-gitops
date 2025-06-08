@@ -291,4 +291,4 @@ sourceDb:
   host: "source-postgres-rw" # Service name for the source database
   port: 5432
   database: "sourcedb"
-  credentialsSecret: "source-postgres-credentials"
+  credentialsSecret: "source-postgres-app"
