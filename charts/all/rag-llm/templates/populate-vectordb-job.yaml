@@ -128,7 +128,7 @@ spec:
               name: es-vectordb-es-elastic-user
               key: elastic
         {{- end }}
-        command: ["/usr/bin/bash", "/app/entrypoint.sh"]
+        command: {{ .Values.populateDbJob.command | toYaml | nindent 8 }}
         {{- if .Values.populateDbJob.args }}
         args: {{ .Values.populateDbJob.args }}
         {{- end }}
