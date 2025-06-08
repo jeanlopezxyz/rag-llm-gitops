@@ -19,8 +19,8 @@ spec:
     initdb:
       database: {{ .Values.database }}
       owner: {{ .Values.username }}
-      secret:
-        name: {{ .Values.clusterName }}-credentials
+      # secret:
+      #   name: {{ .Values.clusterName }}-credentials
       {{- if .Values.initSQL }}
       postInitSQL:
         {{- range .Values.initSQL }}

@@ -251,39 +251,39 @@ customnetworkpolicy:
 # Configuración de la base de datos PostgreSQL de origen
 source-db:
   enabled: true
-  # clusterName: source-postgres
-  # replicaCount: 1
-  # database: sourcedb
-  # username: sourceuser
-  # # password: ""  # Si está vacío, se generará automáticamente
+  clusterName: source-postgres
+  replicaCount: 1
+  database: sourcedb
+  username: sourceuser
+  # password: ""  # Si está vacío, se generará automáticamente
 
-  # postgresql:
-  #   parameters:
-  #     {}
-  #     # log_statement: "all"
-  #     # log_connections: "on"
+  postgresql:
+    parameters:
+      {}
+      # log_statement: "all"
+      # log_connections: "on"
 
-  # storage:
-  #   size: 5Gi
-  #   # storageClass: ""  # Deja vacío para usar el StorageClass por defecto
-  #   # Si tienes un StorageClass específico, descomenta y especifica:
-  #   # storageClass: "gp3-csi"  # para AWS
-  #   # storageClass: "managed-csi"  # para Azure
-  #   # storageClass: "standard-csi"  # para GCP
+  storage:
+    size: 5Gi
+    # storageClass: ""  # Deja vacío para usar el StorageClass por defecto
+    # Si tienes un StorageClass específico, descomenta y especifica:
+    # storageClass: "gp3-csi"  # para AWS
+    # storageClass: "managed-csi"  # para Azure
+    # storageClass: "standard-csi"  # para GCP
 
-  # resources:
-  #   requests:
-  #     memory: "512Mi"
-  #     cpu: "500m"
-  #   limits:
-  #     memory: "1Gi"
-  #     cpu: "1"
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "1Gi"
+      cpu: "1"
 
-  # # SQL personalizado para inicialización (opcional)
-  # initSQL:
-  #   []
-  #   # - "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
-  #   # - "CREATE EXTENSION IF NOT EXISTS btree_gin;"
+  # SQL personalizado para inicialización (opcional)
+  initSQL:
+    []
+    # - "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
+    # - "CREATE EXTENSION IF NOT EXISTS btree_gin;"
 
 # ===== NUEVA SECCIÓN: Configuración de conexión para el Job =====
 sourceDb:
