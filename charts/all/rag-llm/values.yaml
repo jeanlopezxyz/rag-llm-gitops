@@ -172,10 +172,10 @@ route:
   # path: /
 
 populateDbJob:
-  ## Job image
+  ## Job image - ⚠️ ACTUALIZA CON TU IMAGEN PERSONALIZADA ⚠️
   image:
-    repository: "quay.io/ecosystem-appeng/embeddingjob"
-    tag: "0.0.4"
+    repository: "quay.io/jealopez/event-embeddings-generator" # <-- CAMBIA ESTO POR TU IMAGEN
+    tag: "1.0.0"
     pullPolicy: IfNotPresent
 
   command: ["/usr/bin/bash", "/app/entrypoint.sh"]
@@ -192,6 +192,11 @@ populateDbJob:
   doc_location: examples/notebooks/langchain/rhods-doc
   doc_dir: /docs
 
+  # ===== AGREGAR ESTOS CAMPOS NUEVOS =====
+  # Configuración del modelo de embeddings
+  embeddingModel: "all-MiniLM-L6-v2" # Puedes cambiar a otro modelo como "all-mpnet-base-v2"
+  batchSize: 100 # Tamaño del batch para procesar embeddings
+
   # By default, fullname uses '{{ .Release.Name }}-{{ .Chart.Name }}'. This
   # overrides that and uses the given string instead.
   # fullnameOverride: "some-name"
@@ -203,19 +208,19 @@ populateDbJob:
 
   annotations: {}
 
-  ## define resources
-  #resources:
-  #  limits:
-  #    cpu: 2
-  #    memory: 2000Mi
-  #  requests:
-  #    cpu: 500m
-  #    memory: 500Mi
+  ## define resources - ⚠️ DESCOMENTA Y AJUSTA SEGÚN TU NECESIDAD ⚠️
+  resources:
+    limits:
+      cpu: 2
+      memory: 4Gi # Aumentado para procesamiento de embeddings
+    requests:
+      cpu: 1
+      memory: 2Gi
 
   securityContext:
-    runAsUser:
-    runAsGroup:
-    fsGroup:
+    runAsUser: 1001 # Ajusta según los requerimientos de tu imagen
+    runAsGroup: 1001
+    fsGroup: 1001
 
   volumeMounts:
     - mountPath: /cache/
@@ -279,3 +284,11 @@ source-db:
     []
     # - "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
     # - "CREATE EXTENSION IF NOT EXISTS btree_gin;"
+
+# ===== NUEVA SECCIÓN: Configuración de conexión para el Job =====
+sourceDb:
+  enabled: true # Cambiar a false si quieres usar el comportamiento original (git docs)
+  host: "source-postgres-rw" # Service name for the source database
+  port: 5432
+  database: "sourcedb"
+  credentialsSecret: "source-postgres-credentials"

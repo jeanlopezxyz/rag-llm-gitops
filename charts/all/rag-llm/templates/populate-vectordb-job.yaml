@@ -36,6 +36,35 @@ spec:
           value:  {{ .Values.populateDbJob.doc_location | quote }}
         - name: TEMP_DIR
           value: {{ .Values.populateDbJob.doc_dir | quote }}
+        
+        {{- if .Values.sourceDb.enabled }}
+        # Source database connection
+        - name: SOURCE_DB_HOST
+          value: {{ .Values.sourceDb.host }}
+        - name: SOURCE_DB_PORT
+          value: "{{ .Values.sourceDb.port }}"
+        - name: SOURCE_DB_NAME
+          value: {{ .Values.sourceDb.database }}
+        - name: SOURCE_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.sourceDb.credentialsSecret }}
+              key: username
+        - name: SOURCE_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.sourceDb.credentialsSecret }}
+              key: password
+        
+        # Embedding configuration
+        - name: EMBEDDING_MODEL
+          value: {{ .Values.populateDbJob.embeddingModel | default "all-MiniLM-L6-v2" }}
+        - name: BATCH_SIZE
+          value: "{{ .Values.populateDbJob.batchSize | default 100 }}"
+        - name: USE_SOURCE_DB
+          value: "true"
+        {{- end }}
+        
       {{- if eq .Values.global.db.type "REDIS" }}
         - name: DB_TYPE
           value: "REDIS"
