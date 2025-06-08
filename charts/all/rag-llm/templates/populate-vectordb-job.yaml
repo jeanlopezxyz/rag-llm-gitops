@@ -26,6 +26,8 @@ spec:
         imagePullPolicy: {{ .Values.populateDbJob.image.pullPolicy }}
         name: populate-vectordb
         env:
+        - name: LOAD_TEST_DATA
+          value: "true"
         - name: TRANSFORMERS_CACHE
           value: '/cache/.cache'
         - name: SENTENCE_TRANSFORMERS_HOME
