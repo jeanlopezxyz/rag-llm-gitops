@@ -284,11 +284,3 @@ source-db:
     []
     # - "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
     # - "CREATE EXTENSION IF NOT EXISTS btree_gin;"
-
-# ===== NUEVA SECCIÓN: Configuración de conexión para el Job =====
-sourceDb:
-  enabled: true # Cambiar a false si quieres usar el comportamiento original (git docs)
-  host: "source-postgres-rw" # Service name for the source database
-  port: 5432
-  database: "sourcedb"
-  # credentialsSecret: "source-postgres-app"

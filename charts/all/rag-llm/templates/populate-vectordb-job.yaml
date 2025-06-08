@@ -40,11 +40,20 @@ spec:
         {{- if .Values.sourceDb.enabled }}
         # Source database connection
         - name: DB_SOURCE_HOST
-          value: {{ .Values.sourceDb.host }}
+          valueFrom:
+            secretKeyRef:
+              name: source-postgres-app
+              key: host
         - name: DB_SOURCE_PORT
-          value: "{{ .Values.sourceDb.port }}"
+          valueFrom:
+            secretKeyRef:
+              name: source-postgres-app
+              key: port
         - name: DB_SOURCE_NAME
-          value: {{ .Values.sourceDb.database }}
+          valueFrom:
+            secretKeyRef:
+              name: source-postgres-app
+              key: dbname
         - name: DB_SOURCE_USER
           valueFrom:
             secretKeyRef:
@@ -55,12 +64,31 @@ spec:
             secretKeyRef:
               name: source-postgres-app
               key: password
-                - name: DB_HOST
-        # - name: DB_DEST_HOST
-        #   valueFrom:
-        #     secretKeyRef:
-        #       name: vectordb-app
-        #       key: host
+        - name: DB_DEST_HOST
+          valueFrom:
+            secretKeyRef:
+              name: vectordb-app
+              key: host
+        - name: DB_DEST_PORT
+          valueFrom:
+            secretKeyRef:
+              name: vectordb-app
+              key: port
+        - name: DB_DEST_NAME
+          valueFrom:
+            secretKeyRef:
+              name: vectordb-app
+              key: dbname
+        - name: DB_DEST_USER
+          valueFrom:
+            secretKeyRef:
+              name: vectordb-app
+              key: username
+        - name: DB_DEST_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: vectordb-app
+              key: password
         # Embedding configuration
         - name: EMBEDDING_MODEL_NAME
           value: {{ .Values.populateDbJob.embeddingModel | default "all-MiniLM-L6-v2" }}
