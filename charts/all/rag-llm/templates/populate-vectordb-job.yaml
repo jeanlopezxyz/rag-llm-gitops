@@ -37,7 +37,7 @@ spec:
         - name: TEMP_DIR
           value: {{ .Values.populateDbJob.doc_dir | quote }}
         
-        {{- if .Values.sourceDb.enabled }}
+        {{- if and .Values.sourceDb .Values.sourceDb.enabled }}
         # Source database connection
         - name: DB_SOURCE_HOST
           valueFrom:
