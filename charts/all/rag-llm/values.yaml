@@ -284,3 +284,7 @@ source-db:
     []
     # - "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
     # - "CREATE EXTENSION IF NOT EXISTS btree_gin;"
+
+# ===== NUEVA SECCIÓN: Configuración de conexión para el Job =====
+sourceDb:
+  enabled: true # Cambiar a false si quieres usar el comportamiento original (git docs)
