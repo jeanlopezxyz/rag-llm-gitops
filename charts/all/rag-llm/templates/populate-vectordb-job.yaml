@@ -56,11 +56,11 @@ spec:
               name: source-postgres-app
               key: password
                 - name: DB_HOST
-        - name: DB_DEST_HOST
-          valueFrom:
-            secretKeyRef:
-              name: vectordb-app
-              key: host
+        # - name: DB_DEST_HOST
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: vectordb-app
+        #       key: host
         # Embedding configuration
         - name: EMBEDDING_MODEL_NAME
           value: {{ .Values.populateDbJob.embeddingModel | default "all-MiniLM-L6-v2" }}
