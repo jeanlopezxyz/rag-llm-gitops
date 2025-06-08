@@ -194,7 +194,7 @@ populateDbJob:
 
   # ===== AGREGAR ESTOS CAMPOS NUEVOS =====
   # Configuración del modelo de embeddings
-  embeddingModel: "all-MiniLM-L6-v2" # Puedes cambiar a otro modelo como "all-mpnet-base-v2"
+  embeddingModel: "sentence-transformers/multi-qa-mpnet-base-dot-v1" # Puedes cambiar a otro modelo como "all-mpnet-base-v2"
   batchSize: 100 # Tamaño del batch para procesar embeddings
 
   # By default, fullname uses '{{ .Release.Name }}-{{ .Chart.Name }}'. This
@@ -291,4 +291,4 @@ sourceDb:
   host: "source-postgres-rw" # Service name for the source database
   port: 5432
   database: "sourcedb"
-  credentialsSecret: "source-postgres-app"
+  # credentialsSecret: "source-postgres-app"

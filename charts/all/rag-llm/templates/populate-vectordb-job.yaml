@@ -39,30 +39,34 @@ spec:
         
         {{- if .Values.sourceDb.enabled }}
         # Source database connection
-        - name: SOURCE_DB_HOST
+        - name: DB_SOURCE_HOST
           value: {{ .Values.sourceDb.host }}
-        - name: SOURCE_DB_PORT
+        - name: DB_SOURCE_PORT
           value: "{{ .Values.sourceDb.port }}"
-        - name: SOURCE_DB_NAME
+        - name: DB_SOURCE_NAME
           value: {{ .Values.sourceDb.database }}
-        - name: SOURCE_DB_USER
+        - name: DB_SOURCE_USER
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.sourceDb.credentialsSecret }}
+              name: source-postgres-app
               key: username
-        - name: SOURCE_DB_PASSWORD
+        - name: DB_SOURCE_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.sourceDb.credentialsSecret }}
+              name: source-postgres-app
               key: password
-        
+                - name: DB_HOST
+        - name: DB_DEST_HOST
+          valueFrom:
+            secretKeyRef:
+              name: vectordb-app
+              key: host
         # Embedding configuration
-        - name: EMBEDDING_MODEL
+        - name: EMBEDDING_MODEL_NAME
           value: {{ .Values.populateDbJob.embeddingModel | default "all-MiniLM-L6-v2" }}
         - name: BATCH_SIZE
           value: "{{ .Values.populateDbJob.batchSize | default 100 }}"
-        - name: USE_SOURCE_DB
-          value: "true"
+
         {{- end }}
         
       {{- if eq .Values.global.db.type "REDIS" }}
