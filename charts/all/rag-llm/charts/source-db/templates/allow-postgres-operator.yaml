@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-postgres-operator-ingress
+  namespace: rag-llm # Asegúrate que este es el namespace correcto
+spec:
+  # Aplica esta política a todos los pods del clúster de postgres
+  podSelector:
+    matchLabels:
+      postgresql: source-postgres
+  policyTypes:
+    - Ingress
+  ingress:
+    # Permite la comunicación desde el namespace donde corre el operador
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              # El label estándar para el namespace de operadores de OpenShift
+              kubernetes.io/metadata.name: openshift-operators
+      ports:
+        # Permite el tráfico a todos los puertos de los pods de la DB
+        - {}
