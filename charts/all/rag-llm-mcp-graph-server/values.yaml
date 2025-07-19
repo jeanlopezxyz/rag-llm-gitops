@@ -2,9 +2,9 @@
 replicaCount: 1
 
 image:
-  repository: quay.io/ecosystem-appeng/rag-llm-mcp-graph-server
+  repository: quay.io/jealopez/rag-llm-mcp-graph-server
   pullPolicy: IfNotPresent
-  tag: "latest"
+  tag: "1.0.0"
 
 imagePullSecrets: []
 nameOverride: ""

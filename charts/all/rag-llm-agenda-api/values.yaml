@@ -2,9 +2,9 @@
 replicaCount: 1
 
 image:
-  repository: quay.io/ecosystem-appeng/rag-llm-agenda-api
+  repository: quay.io/jealopez/rag-llm-agenda-api
   pullPolicy: IfNotPresent
-  tag: "latest"
+  tag: "1.0.0"
 
 imagePullSecrets: []
 nameOverride: ""
