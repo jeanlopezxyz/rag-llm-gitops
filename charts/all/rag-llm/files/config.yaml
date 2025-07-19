@@ -1,4 +1,16 @@
 llm_providers:
+  - name: "RAG LLM Agent Core"
+    enabled: True
+    models:
+      - name: agent-orchestrator
+        weight: 1
+        enabled: True
+        url: http://rag-llm-agent-core:8000
+        params:
+          - name: max_iterations
+            value: 15
+          - name: return_intermediate_steps
+            value: true
   - name: "OpenShift AI (vLLM)"
     enabled: True
     models:
@@ -21,7 +33,7 @@ llm_providers:
             value: False
           - name: typical_p
             value: 0.95
-default_provider: "OpenShift AI (vLLM)"
-default_model: {{ .Values.global.model.modelId }}
-# type values=(default, round_robin,  all)
-type: all
+default_provider: "RAG LLM Agent Core"
+default_model: "agent-orchestrator"
+# type values=(default, round_robin, all)
+type: default

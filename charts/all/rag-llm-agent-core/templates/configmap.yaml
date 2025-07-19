@@ -1,0 +1,51 @@
+{{- if .Values.configMap.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "rag-llm-agent-core.fullname" . }}
+  labels:
+    {{- include "rag-llm-agent-core.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    # Agent Core Configuration
+    service:
+      name: "RAG LLM Agent Core"
+      version: "1.0.0"
+      port: 8000
+    
+    # MCP Integration
+    mcp:
+      enabled: true
+      transport: http
+      servers:
+        agenda:
+          url: {{ .Values.env.MCP_AGENDA_URL }}
+          name: "Agenda API Server"
+        vector:
+          url: {{ .Values.env.MCP_VECTOR_URL }}
+          name: "Vector Search Server"
+        graph:
+          url: {{ .Values.env.MCP_GRAPH_URL }}
+          name: "Graph Database Server"
+    
+    # LLM Configuration
+    llm:
+      provider: {{ .Values.env.LLM_PROVIDER }}
+      providers:
+        granite:
+          base_url: {{ .Values.env.GRANITE_BASE_URL }}
+          model: {{ .Values.env.GRANITE_MODEL }}
+        gemini:
+          base_url: "https://generativelanguage.googleapis.com/v1beta"
+          model: "gemini-1.5-flash"
+    
+    # Agent Configuration
+    agent:
+      max_iterations: 15
+      return_intermediate_steps: true
+      handle_parsing_errors: true
+    
+    {{- if .Values.configMap.data }}
+    {{- toYaml .Values.configMap.data | nindent 4 }}
+    {{- end }}
+{{- end }}

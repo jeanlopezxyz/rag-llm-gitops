@@ -1,0 +1,134 @@
+# Default values for rag-llm-agent-core
+replicaCount: 1
+
+image:
+  repository: quay.io/ecosystem-appeng/rag-llm-agent-core
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 8000
+  targetPort: 8000
+
+route:
+  enabled: true
+  host: ""
+  path: /
+  tls:
+    enabled: true
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 2Gi
+  requests:
+    cpu: 500m
+    memory: 1Gi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Environment variables
+env:
+  # Threading optimizations
+  OMP_NUM_THREADS: "1"
+  OPENBLAS_NUM_THREADS: "1"
+  MKL_NUM_THREADS: "1"
+  VECLIB_MAXIMUM_THREADS: "1"
+  NUMEXPR_NUM_THREADS: "1"
+  SKLEARN_NO_OPENMP: "1"
+  FAISS_ENABLE_GPU: "0"
+  DISABLE_FAISS_FALLBACK: "1"
+  
+  # MCP configuration
+  MCP_TRANSPORT: "http"
+  MCP_ENABLED: "true"
+  MCP_RESPONSE_TIMEOUT: "10.0"
+  MCP_VECTOR_ENABLED: "true"
+  MCP_GRAPH_ENABLED: "true"
+  
+  # MCP Server URLs - using Kubernetes service names
+  MCP_AGENDA_URL: "http://rag-llm-mcp-server:8000"
+  MCP_VECTOR_URL: "http://rag-llm-mcp-vector-server:8000"
+  MCP_GRAPH_URL: "http://rag-llm-mcp-graph-server:8000"
+  
+  # LLM Provider configuration
+  LLM_PROVIDER: "granite"
+  GRANITE_BASE_URL: "http://hf-text-generation-inference-server:3000/v1"
+  GRANITE_MODEL: "granite-3.3-8b-instruct"
+  
+  # Event configuration
+  CONFIG_FILE: "config.yaml"
+  EVENT_NAME: "KCD Lima Peru 2025"
+  EVENT_DATE: "2025-06-14"
+  EVENT_LOCATION: "Lima, Peru"
+  
+  # Alternative providers
+  GEMINI_BASE_URL: "https://generativelanguage.googleapis.com/v1beta"
+  GEMINI_MODEL: "gemini-1.5-flash"
+
+# ConfigMap for additional configuration
+configMap:
+  enabled: true
+  data: {}
+
+# Secrets
+secrets:
+  # External secret for API keys
+  externalSecret:
+    enabled: true
+    name: agent-core-secrets
+    backend: vault
+    key: secret/data/hub/agent-core
+    
+# Health checks
+livenessProbe:
+  enabled: true
+  httpGet:
+    path: /health
+    port: 8000
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+readinessProbe:
+  enabled: true
+  httpGet:
+    path: /health
+    port: 8000
+  initialDelaySeconds: 5
+  periodSeconds: 5

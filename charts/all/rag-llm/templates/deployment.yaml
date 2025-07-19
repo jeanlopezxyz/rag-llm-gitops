@@ -39,7 +39,9 @@ spec:
             - name: CONFIG_FILE
               value: /app-root/config/config.yaml
             - name: APP_TITLE
-              value: Talk with your documentation
+              value: "🎤 Asistente de Eventos - KCD Lima Peru 2025"
+            - name: AGENT_CORE_URL
+              value: http://rag-llm-agent-core:8000
         {{- if eq .Values.global.db.type "REDIS" }}
             - name: DB_TYPE
               value: REDIS

@@ -1,0 +1,13 @@
+apiVersion: v2
+name: rag-llm-mcp-server
+description: MCP protocol server for tool integration in RAG LLM system
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - mcp
+  - protocol
+  - tools
+  - integration
+maintainers:
+  - name: KCD Peru Team

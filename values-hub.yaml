@@ -117,6 +117,38 @@ clusterGroup:
       namespace: rag-llm
       project: rag-llm
       path: charts/all/rag-llm
+    
+    # New microservices
+    rag-llm-agent-core:
+      name: rag-llm-agent-core
+      namespace: rag-llm
+      project: rag-llm
+      path: charts/all/rag-llm-agent-core
+    
+    rag-llm-agenda-api:
+      name: rag-llm-agenda-api
+      namespace: rag-llm
+      project: rag-llm
+      path: charts/all/rag-llm-agenda-api
+    
+    rag-llm-mcp-server:
+      name: rag-llm-mcp-server
+      namespace: rag-llm
+      project: rag-llm
+      path: charts/all/rag-llm-mcp-server
+    
+    rag-llm-mcp-vector-server:
+      name: rag-llm-mcp-vector-server
+      namespace: rag-llm
+      project: rag-llm
+      path: charts/all/rag-llm-mcp-vector-server
+    
+    rag-llm-mcp-graph-server:
+      name: rag-llm-mcp-graph-server
+      namespace: rag-llm
+      project: rag-llm
+      path: charts/all/rag-llm-mcp-graph-server
+    
     llm-monitoring:
       name: llm-monitoring
       namespace: llm-monitoring
